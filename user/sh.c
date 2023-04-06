@@ -335,6 +335,7 @@ parsecmd(char *s)
   cmd = parseline(&s, es);
   peek(&s, es, "");
   if(s != es){
+    // 2 is the fd of std error
     fprintf(2, "leftovers: %s\n", s);
     panic("syntax");
   }
