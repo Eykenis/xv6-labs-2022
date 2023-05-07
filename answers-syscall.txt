@@ -1,1 +1,38 @@
-kernerl/trap.c
+Looking at the backtrace output, which function called `syscall`?
+
+> `usertrap()` in `kernel/trap.c`
+
+What is the value of `p->trapframe->a7` and what does that value represent? (Hint: look `user/initcode.S`, the first user program xv6 starts.)
+
+> 7. sys status. EXEC or EXIT. in start at user/initcode.S, a7 is assigned with SYS_EXEC.
+
+What was the previous mode that the CPU was in?
+
+> usermode. check sstatus:
+>
+> ```shell
+> p/t $sstatus
+> $5 = 100010
+> ```
+>
+> (Here we do as instruction, and if we check 'p' we'll get 'value has been optimized out'. It's because creation of \*p is after our breakpoint! what a fool is me.)
+
+Write down the assembly instruction the kernel is panicing at. Which register corresponds to the varialable `num`?
+
+> 80002078:	00002903          	lw	s2,0(zero) # 0 <_entry-0x80000000>
+>
+> s2.
+
+Why does the kernel crash? Hint: look at figure 3-3 in the text; is address 0 mapped in the kernel address space? Is that confirmed by the value in `scause` above? (See description of `scause` in [RISC-V privileged instructions](https://pdos.csail.mit.edu/6.828/2022/labs/n//github.com/riscv/riscv-isa-manual/releases/download/Priv-v1.12/riscv-privileged-20211203.pdf))
+
+> check scause, `$1 = 13`.
+>
+> 13 represents a load page fault. That's because we load data from addr 0. 0 is not avaliable. Kernel space begins at 0x80000000.
+
+What is the name of the binary that was running when the kernel paniced? What is its process id (`pid`)?
+
+> initcode.
+>
+> pid is 1.
+>
+> use p/x \*p.
