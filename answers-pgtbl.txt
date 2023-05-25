@@ -1,0 +1,18 @@
+Explain the output of `vmprint` in terms of Fig 3-4 from the text. What does page 0 contain? What is in page 2? When running in user mode, could the process read/write the memory mapped by page 1? What does the third to last page contain?
+
+>page 0 contains text and data seg.
+>
+>page 2 contains stack. (page 1 as stack gurad)
+>
+>**SEE IN `exec()` IN exec.c**
+>
+>NO.
+>
+>511 to 509: trampoline, trapframe, and usyscall.
+>
+>so 509 contains the struct `usyscall`.
+
+> Which other xv6 system call(s) could be made faster using this shared page? Explain how.
+
+fork(). We add a pointer \*proc in struct usyscall, then children could access there parent in USYSCALL page.
+
